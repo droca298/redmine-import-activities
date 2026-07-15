@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+./upgrade-version-readme.md
+.claude/launch.json
+.dockerignore
+.idea/.gitignore
+.idea/discord.xml
+.idea/material_theme_project_new.xml
+.idea/modules.xml
+.idea/redmine-import-activities.iml
+upgrade-version-readme.md
