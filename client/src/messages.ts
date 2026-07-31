@@ -62,8 +62,19 @@ export const MESSAGES = {
       error: 'Error',
     },
     issueFallback: 'Tarea',
-    successDetail: (spentOn: string, target: string, hours: number, timeEntryId: number) =>
-      `${spentOn} · ${target} · ${hours}h (id ${timeEntryId})`,
+    successDetail: (
+      spentOn: string,
+      project: string | undefined,
+      hours: number,
+      timeEntryId: number,
+      issueId?: number,
+      issueSubject?: string
+    ) => {
+      const target = issueId
+        ? `${issueSubject ?? MESSAGES.results.issueFallback} (#${issueId})`
+        : (project ?? MESSAGES.results.issueFallback);
+      return `${spentOn} · ${target} · ${hours}h (id ${timeEntryId})`;
+    },
   },
 
   consulta: {

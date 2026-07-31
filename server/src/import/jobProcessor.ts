@@ -34,6 +34,8 @@ export async function startProcessing(job: Job): Promise<void> {
           status: 'success',
           spentOn: row.spentOn,
           project: row.proyecto,
+          issueId: row.issueId,
+          issueSubject: row.issueSubject,
           hours: row.horas,
           timeEntryId: outcome.id,
         }

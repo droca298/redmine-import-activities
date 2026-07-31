@@ -8,7 +8,7 @@ import {
   ValidatedRow,
 } from '../types';
 import { normalizeSpentOn } from '../utils/dates';
-import { fetchIssue } from '../redmine/issues';
+import { fetchIssue, RedmineIssueDTO } from '../redmine/issues';
 import { MESSAGES } from '../messages';
 
 const normalize = (s: string) => s.trim().toLowerCase();
@@ -25,7 +25,7 @@ export async function validateRow(
   favorites: FavoriteActivity[],
   trust: TrustedProjectsSettings | undefined,
   redmine: RedmineCreds,
-  issueProjectCache: Map<number, string | undefined>
+  issueCache: Map<number, RedmineIssueDTO | undefined>
 ): Promise<ValidatedRow | RowResult> {
   if (!row.fecha) {
     return { rowIndex: row.rowIndex, status: 'error', reason: MESSAGES.validation.missingDate };
@@ -93,20 +93,24 @@ export async function validateRow(
     projectId = project.id;
   }
 
+  let issue: RedmineIssueDTO | undefined;
+  if (issueId) {
+    if (!issueCache.has(issueId)) {
+      try {
+        issueCache.set(issueId, await fetchIssue(redmine, issueId));
+      } catch {
+        issueCache.set(issueId, undefined);
+      }
+    }
+    issue = issueCache.get(issueId);
+  }
+
   if (trust?.enabled) {
     const normalizedTrusted = trust.projects.map(normalize);
     let actualProject: string | undefined;
 
     if (issueId) {
-      if (!issueProjectCache.has(issueId)) {
-        try {
-          const issue = await fetchIssue(redmine, issueId);
-          issueProjectCache.set(issueId, issue?.projectName);
-        } catch {
-          issueProjectCache.set(issueId, undefined);
-        }
-      }
-      actualProject = issueProjectCache.get(issueId);
+      actualProject = issue?.projectName;
 
       if (!actualProject) {
         return {
@@ -135,6 +139,7 @@ export async function validateRow(
     spentOn,
     activityId: activity.id,
     issueId,
+    issueSubject: issue?.subject,
     projectId,
   };
 }

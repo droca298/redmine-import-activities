@@ -15,6 +15,8 @@ export type RowResult =
       status: 'success';
       spentOn: string;
       project?: string;
+      issueId?: number;
+      issueSubject?: string;
       hours: number;
       timeEntryId: number;
     }
