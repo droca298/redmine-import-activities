@@ -10,6 +10,7 @@ import { createJob, getJob, deleteJob } from '../import/jobStore';
 import { startProcessing, getJobEmitter, releaseJobEmitter } from '../import/jobProcessor';
 import { initSse, sendSseEvent } from '../utils/sse';
 import { FavoriteActivity, Job, RowResult, ValidatedRow } from '../types';
+import { RedmineIssueDTO } from '../redmine/issues';
 import { MESSAGES } from '../messages';
 import { IMPORT_PATHS } from './paths';
 
@@ -55,7 +56,7 @@ importRouter.post(IMPORT_PATHS.upload, redmineCreds, upload.single('file'), asyn
 
     const validRows: ValidatedRow[] = [];
     const preErrors: RowResult[] = [];
-    const issueProjectCache = new Map<number, string | undefined>();
+    const issueCache = new Map<number, RedmineIssueDTO | undefined>();
 
     for (const row of rawRows) {
       if (row.enviado) {
@@ -73,7 +74,7 @@ importRouter.post(IMPORT_PATHS.upload, redmineCreds, upload.single('file'), asyn
         favorites,
         trust,
         req.redmine!,
-        issueProjectCache
+        issueCache
       );
       if ('status' in outcome) {
         preErrors.push(outcome);

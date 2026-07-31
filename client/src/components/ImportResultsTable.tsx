@@ -35,9 +35,11 @@ export function ImportResultsTable({ results }: { results: RowResult[] }) {
               {r.status === 'success'
                 ? MESSAGES.results.successDetail(
                     r.spentOn,
-                    r.project ?? MESSAGES.results.issueFallback,
+                    r.project,
                     r.hours,
-                    r.timeEntryId
+                    r.timeEntryId,
+                    r.issueId,
+                    r.issueSubject
                   )
                 : r.reason}
             </td>

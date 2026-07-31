@@ -34,6 +34,7 @@ export interface ImportRow {
 
 export interface ValidatedRow extends ImportRow {
   issueId?: number;
+  issueSubject?: string;
   projectId?: number;
   activityId: number;
   spentOn: string;
@@ -45,6 +46,8 @@ export type RowResult =
       status: 'success';
       spentOn: string;
       project?: string;
+      issueId?: number;
+      issueSubject?: string;
       hours: number;
       timeEntryId: number;
     }
